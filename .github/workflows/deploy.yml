@@ -6,23 +6,22 @@ on:
       - master
 jobs:
   run-snyk:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - uses: snyk/actions/setup@master
-        - name: Snyk Code Test
-          continue-on-error: true
-          run: snyk code test --sarif > snyk.sarif
-          env:
-            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  upload-results:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Upload results to Github Code Scanning
-          uses: github/codeql-action/upload-sarif@v2
-          with:
-            sarif_file: snyk.sarif
-            category: snyk
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build an image
+      run: docker build . -t synk-image       
+    - name: Run Snyk to check image for vulnerabilities
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: synk-image
+        args: --file=Dockerfile
+    - uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: snyk.sarif
 
   run-sonar-cloud:
     runs-on: ubuntu-latest
