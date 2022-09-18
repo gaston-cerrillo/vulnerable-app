@@ -25,6 +25,7 @@ jobs:
             -Dsonar.verbose=true
             -Dsonar.sourceEncoding=UTF-8
             -Dsonar.qualitygate.wait=true
+            -Dsonar.organization=${{ secrets.SONAR_CLOUD_ORGANIZATION }}
 
   deploy-heroku:
     name: Deploy Heroku
