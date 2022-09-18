@@ -1,4 +1,8 @@
-on: [push]
+on:
+  push:
+    branches:
+      - staging
+
 jobs:
   run-snyk:
     runs-on: ubuntu-latest
@@ -7,7 +11,7 @@ jobs:
     - name: Build an image
       run: docker build . -t synk-image       
     - name: Run Snyk to check image for vulnerabilities
-      continue-on-error: true
+      # continue-on-error: true
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SYNK_TOKEN }}
