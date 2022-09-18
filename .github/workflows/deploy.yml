@@ -45,6 +45,20 @@ jobs:
             -Dsonar.qualitygate.wait=true
             -Dsonar.organization=${{ secrets.SONAR_CLOUD_ORGANIZATION }}
 
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: Scan the webapplication
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          docker_name: 'owasp/zap2docker-stable'
+          target: 'https://gcerrillo-vwapp.herokuapp.com/'   
+
   run-trivy:
     runs-on: ubuntu-latest
     steps:
