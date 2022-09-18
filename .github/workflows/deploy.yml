@@ -45,6 +45,23 @@ jobs:
             -Dsonar.qualitygate.wait=true
             -Dsonar.organization=${{ secrets.SONAR_CLOUD_ORGANIZATION }}
 
+  run-trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build an image
+        run: docker build . -t trivy-image    
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image: trivy-image
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
   deploy-heroku:
     name: Deploy Heroku
     runs-on: ubuntu-latest
