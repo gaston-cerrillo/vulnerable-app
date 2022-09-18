@@ -15,7 +15,8 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           command: monitor
-          args: --severity-threshold=high --file=package.json
+          args: --severity-threshold=high 
+          args: --file=package.json
 
   run-sonar-cloud:
     runs-on: ubuntu-latest
